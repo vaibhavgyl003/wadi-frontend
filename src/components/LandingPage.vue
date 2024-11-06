@@ -75,6 +75,63 @@
       </div>
     </section>
 
+
+
+  <section id="crops" class="crops-section">
+    <h2 id="Crops-Calendar">Crops Calendar</h2>
+    <div class="crops-dropdown">
+      <label for="crops-type">Select Crops Type:</label>
+      <select id="crops-type" v-model="selectedCropsType">
+        <option value="horticulture">Horticulture</option>
+        <option value="agriculture">Agriculture</option>
+      </select>
+    </div>
+    
+    <div class="crops-calendar">
+      <div v-if="selectedCropsType === 'agriculture'">
+        <table>
+          <thead>
+            <tr>
+              <th>Vegetables</th>
+              <th v-for="month in months" :key="month">{{ month }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="vegetable in vegetables" :key="vegetable.name">
+              <td>{{ vegetable.name }}</td>
+              <td v-for="month in months" :key="`${vegetable.name}-${month}`">
+                <span v-if="vegetable.plantingMonths.includes(month)" class="planting-indicator">🌱</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div v-else>
+        <table>
+          <thead>
+            <tr>
+              <th>Fruits</th>
+              <th v-for="month in months" :key="month">{{ month }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="fruit in fruits" :key="fruit.name">
+              <td>
+                <span>{{ fruit.icon }} {{ fruit.name }}</span>
+              </td>
+              <td v-for="month in months" :key="`${fruit.name}-${month}`">
+                <span v-if="fruit.plantingMonths.includes(month)" class="planting-indicator">🌱</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+
+
     <footer class="footer">
       <p>© 2024 WADI. All rights reserved.</p>
     </footer>
@@ -93,7 +150,27 @@ export default {
     return {
       activeSection: 'home',
       imageLoaded: false,
-      isLoading: true
+      isLoading: true,
+      selectedCropsType: 'horticulture',
+      months: ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'August', 'Sept', 'Oct', 'Nov', 'Dec'],
+      vegetables: [
+        { name: '🍅 Tomato', plantingMonths: ['April', 'May', 'June', 'July', 'August', 'September', 'October'] },
+        { name: '🫑 Bottle Gourd', plantingMonths: ['March', 'April', 'May', 'June', 'July'] },
+        { name: '🌶️ Chilly', plantingMonths: ['March', 'April', 'May', 'June', 'July', 'August', 'September', 'October'] },
+        { name: '🥕 Carrot', plantingMonths: ['September', 'October', 'November'] },
+        { name: '🥬 Radish', plantingMonths: ['September', 'October', 'November'] },
+        { name: '🎃 Pumpkin', plantingMonths: ['March', 'April', 'May'] },
+        { name: '🫑 Sponge Gourd', plantingMonths: ['March', 'April', 'May', 'June', 'July'] },
+        { name: '🌿 Okra', plantingMonths: ['March', 'April', 'May', 'June', 'July'] },
+        { name: '🍠 Sweet Potato', plantingMonths: ['June', 'July', 'August'] },
+      ],
+      fruits: [
+        { name: 'Guava', icon: '🍐', plantingMonths: ['May', 'June'] },
+        { name: 'Custard Apple', icon: '🍏', plantingMonths: [] },
+        { name: 'Mango', icon: '🥭', plantingMonths: [] },
+        { name: 'Papaya', icon: '🍈', plantingMonths: [] },
+        { name: 'Lemon', icon: '🍋', plantingMonths: [] },
+      ],
     }
   },
   created: function () {
@@ -141,7 +218,7 @@ export default {
       this.$router.push('/login')
     },
     handleScroll () {
-      const sections = ['home', 'about', 'features']
+      const sections = ['home', 'about', 'features','crops']
       let current = ''
 
       for (let section of sections) {
@@ -400,6 +477,89 @@ export default {
 
   .features-content {
     flex-direction: column;
+  }
+}
+
+  #Crops-Calendar {
+  margin-top: 2rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: #2E7D32;
+  font-weight: bold;
+}
+
+/*STYLES FOR CROPS SECTION */
+.crops-section {
+  padding: 2rem;
+  background-color: #f5f5f5;
+}
+
+.crops-dropdown {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.crops-dropdown label {
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.crops-dropdown select {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: 2px solid #4CAF50;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.crops-calendar {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+
+.crops-calendar table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.crops-calendar th,
+.crops-calendar td {
+  padding: 1rem;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.crops-calendar th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.crops-calendar tr:hover {
+  background-color: #f9f9f9;
+}
+
+.planting-indicator {
+  font-size: 1.5rem;
+  color: #4CAF50;
+}
+
+@media (max-width: 768px) {
+  .crops-calendar {
+    margin: 0 -1rem;
+  }
+  
+  .crops-calendar th,
+  .crops-calendar td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .planting-indicator {
+    font-size: 1.2rem;
   }
 }
 </style>
